@@ -1,14 +1,19 @@
 apiVersion: tekton.dev/v1beta1
-kind: Pipeline
+kind: PipelineRun
 metadata:
-  name: tax-calculator-pipeline
+  name: juphc-tc_pipeline
 spec:
-  tasks:
-    - name: npm-install
-      taskRef:
-        name: npm
-    - name: run-tests
-      taskRef:
-        name: jasmine
-      runAfter:
-        - npm-install
+  pipelineRef:
+    name: tax-calculator-pipeline
+  params:
+    - name: IMAGE_URL
+      value: "docker.io/username/tax-calculator:latest"
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
